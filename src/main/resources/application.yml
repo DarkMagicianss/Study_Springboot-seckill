@@ -12,9 +12,9 @@ spring:
       #mysql驱动
       driver-class-name: com.mysql.jdbc.Driver
       #基本属性
-      url: jdbc:mysql://127.0.0.1:3306/seckill?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://127.0.0.1:3306/lh_seckill?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull
       username: root
-      password: root
+      password: 123
       #配置初始化大小/最小/最大
       initial-size: 1
       min-idle: 1
@@ -25,6 +25,8 @@ spring:
       time-between-eviction-runs-millis: 60000
 
   thymeleaf:
+    #spring.thymeleaf.prefix templates用来存放HTML页面 需要在yml文件中配置其页面地址
+    #由thymeleaf加持的HTML页面可以使用th:text="${key}"的形式获得session、request中的内容
     prefix: classpath:/templates/
     check-template-location: true
     suffix: .html

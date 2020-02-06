@@ -41,6 +41,14 @@ public interface SeckillService {
      * 否者输出系统时间和秒杀时间
      *
      * @param seckillId
+     * @return Exposer
+     * 首先要保证该商品处于秒杀状态。也就是
+     * 1.秒杀开始时间要<当前时间；
+     * 2.秒杀截止时间要>当前时间。
+     * 要保证一个用户只能抢购到一件该商品，
+     * 应做到商品秒杀接口对应同一用户只能有唯一的一个URL秒杀地址，
+     * 不同用户间秒杀地址应是不同的，
+     * 且配合订单表seckill_order中联合主键的配置实现。
      */
     Exposer exportSeckillUrl(long seckillId);
 

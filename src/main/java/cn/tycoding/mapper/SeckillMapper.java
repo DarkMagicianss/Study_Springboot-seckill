@@ -12,6 +12,7 @@ import java.util.List;
  * @date 2018/10/6
  */
 @Mapper
+//通过@Mapper注解的形式使得该接口能被扫描为Mapper接口
 public interface SeckillMapper {
 
     /**
@@ -31,7 +32,8 @@ public interface SeckillMapper {
 
     /**
      * 减库存。
-     * 对于Mapper映射接口方法中存在多个参数的要加@Param()注解标识字段名称，不然Mybatis不能识别出来哪个字段相互对应
+     * 对于Mapper映射接口方法中存在多个参数的要加@Param()注解标识字段名称，
+     * 不然Mybatis不能识别出来哪个字段相互对应
      *
      * @param seckillId 秒杀商品ID
      * @param killTime  秒杀时间

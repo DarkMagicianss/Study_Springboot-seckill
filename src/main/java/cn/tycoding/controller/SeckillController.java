@@ -48,6 +48,11 @@ public class SeckillController {
         return seckillService.findById(id);
     }
 
+    /*
+    * @RequestMapping("/{seckillId}/detail")是合理的RESTful URL的定义方式
+    * 其URL地址由动态数据拼接组成 而非将所有资源映射到一个路径下
+    * 上面定义的URL的形式可以通过@PathVariable("seckillId")的形式将URL里面传递的数据进行赋值
+    * */
     @RequestMapping("/{seckillId}/detail")
     public String detail(@PathVariable("seckillId") Long seckillId, Model model) {
         if (seckillId == null) {

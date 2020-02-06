@@ -50,7 +50,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+            <!--监控classpath下的资源，进行自动重启服务-->
             <scope>runtime</scope>
+            <!--设定只在开发时使用-->
+            <!--SpringBoot使用两中类加载器 分别加载不变的类以及变动的类-->
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

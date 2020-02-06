@@ -22,7 +22,9 @@ public class Seckill implements Serializable {
     private BigDecimal costPrice; //商品秒杀价格
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    //@DateTimeFormat入参格式化 将传入的String自动转化成pattern指定的格式
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    //@DateTimeFormat出参格式化 将传出的Date数据类型 自动转换成pattern的格式 但是需要指定时区为GMT+8
     private Date createTime; //创建时间
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

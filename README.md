@@ -1,3 +1,5 @@
+**从tycoding大佬fork来的一个项目 后续可扩展支付功能**
+
 **基于SpringBoot实现Java高并发之秒杀系统**
 
 **技术栈**

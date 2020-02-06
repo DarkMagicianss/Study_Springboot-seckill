@@ -35,5 +35,12 @@ CREATE TABLE `seckill_order`(
   `state` tinyint NOT NULL DEFAULT -1 COMMENT '状态：-1无效 0成功 1已付款',
   PRIMARY KEY (`seckill_id`, `user_phone`) /*联合主键，保证一个用户只能秒杀一件商品*/
 ) CHARSET=utf8 ENGINE=InnoDB COMMENT '秒杀订单表';
+-- timestamp类型用来实现自动为新增行字段设置当前系统时间
+-- 且使用timestamp的字段必须给timestamp设置默认值 CURRENT_TIMESTAMP为系统当前时间
 
+-- decimal (10, 2)在数据库中设置精确的数值 这里表示可以存储10位且有2位小数的数值
 
+-- tinyint类型用于存放int类型的数值，但是若用Mybatis作为DAO层框架，
+-- Mybatis会自动为tinyint类型的数据转换成true或false（0:false; 1 or 1+:true）
+
+-- 记得指定库表编码格式 以及存储引擎

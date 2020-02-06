@@ -20,6 +20,8 @@ public class RedisTemplateConfig {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    //如果不实现Redis的序列化，可以往Redis中存入数据，但是存入的key都是乱码的，想要避免这一点就必须实现序列化。
+    //redis序列化有多种形式，这里采用的是Jackson2JsonRedisSerializer的方式
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory){
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);

@@ -32,7 +32,8 @@ public class SeckillServiceImpl implements SeckillService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    //设置盐值字符串，随便定义，用于混淆MD5值
+    //设置自定义盐值字符串，随便定义，用于混淆MD5值
+    //可以依据随机Random定时随机生成 不一定这里就写死
     private final String salt = "sjajaspu-i-2jrfm;sd";
     //设置秒杀redis缓存的key
     private final String key = "seckill";
@@ -48,7 +49,7 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Override
     public List<Seckill> findAll() {
-        List<Seckill> seckillList = redisTemplate.boundHashOps("seckill").values();
+        List<Seckill> seckillList = null;//redisTemplate.boundHashOps("seckill").values();
         if (seckillList == null || seckillList.size() == 0){
             //说明缓存中没有秒杀列表数据
             //查询数据库中秒杀列表数据，并将列表数据循环放入redis缓存中
@@ -66,26 +67,29 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Override
     public Seckill findById(long seckillId) {
-        return seckillMapper.findById(seckillId);
-    }
-
-    @Override
-    public Exposer exportSeckillUrl(long seckillId) {
+        //为啥单个查找的时候不适用redis缓存？ 我自己来加~
         Seckill seckill = (Seckill) redisTemplate.boundHashOps(key).get(seckillId);
         if (seckill == null) {
             //说明redis缓存中没有此key对应的value
             //查询数据库，并将数据放入缓存中
             seckill = seckillMapper.findById(seckillId);
-            if (seckill == null) {
-                //说明没有查询到
-                return new Exposer(false, seckillId);
-            } else {
+            if (seckill != null) {
                 //查询到了，存入redis缓存中。 key:秒杀表的ID值； value:秒杀表数据
                 redisTemplate.boundHashOps(key).put(seckill.getSeckillId(), seckill);
                 logger.info("RedisTemplate -> 从数据库中读取并放入缓存中");
             }
         } else {
             logger.info("RedisTemplate -> 从缓存中读取");
+        }
+        return seckill;
+    }
+
+    @Override
+    public Exposer exportSeckillUrl(long seckillId) {
+        Seckill seckill = findById(seckillId);
+        if (seckill == null) {
+            //说明没有查询到
+            return new Exposer(false, seckillId);
         }
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
@@ -99,7 +103,7 @@ public class SeckillServiceImpl implements SeckillService {
         return new Exposer(true, md5, seckillId);
     }
 
-    //生成MD5值
+    //生成该后端自定义的MD5值
     private String getMD5(Long seckillId) {
         String base = seckillId + "/" + salt;
         String md5 = DigestUtils.md5DigestAsHex(base.getBytes());
@@ -113,16 +117,21 @@ public class SeckillServiceImpl implements SeckillService {
      * 1.保证事务方法的执行时间尽可能短，不要穿插其他网络操作PRC/HTTP请求（可以将这些请求剥离出来）
      * 2.不是所有的方法都需要事务控制，如只有一条修改的操作、只读操作等是不需要进行事务控制的
      * <p>
-     * Spring默认只对运行期异常进行事务的回滚操作，对于编译异常Spring是不进行回滚的，所以对于需要进行事务控制的方法尽可能将可能抛出的异常都转换成运行期异常
+     * Spring默认只对运行期异常进行事务的回滚操作，对于编译异常Spring是不进行回滚的，
+     * 所以对于需要进行事务控制的方法尽可能将可能抛出的异常都转换成运行期异常
      */
     @Override
     @Transactional
     public SeckillExecution executeSeckill(long seckillId, BigDecimal money, long userPhone, String md5)
             throws SeckillException, RepeatKillException, SeckillCloseException {
+        //为什么要走两步？？？
+        //防止一步获得秒杀地址使得某些技术人员在开始秒杀时 由个人产生大量访问而导致系统奔溃
+        //分两步可以使得在秒杀开始之前 无法获得对应的秒杀地址
         if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("seckill data rewrite");
         }
         //执行秒杀逻辑：1.减库存；2.储存秒杀订单
+        //先存储秒杀订单后减库存 减少减库存时行锁所占用的时间
         Date nowTime = new Date();
 
         try {
