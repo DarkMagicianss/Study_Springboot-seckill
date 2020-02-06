@@ -84,24 +84,6 @@ SpringBoot不是对Spring功能上的增强，而是提供了一种快速使用S
 
 
 
-<br/>
-
-# Preview
-
-![](README/show-1.png)
-
-![](README/show-2.png)
-
-![](README/show-3.png)
-
-<br/>
-
-# 交流
-
-如果大家有兴趣，欢迎大家加入我的Java交流群：671017003 ，一起交流学习Java技术。博主目前一直在自学JAVA中，技术有限，如果可以，会尽力给大家提供一些帮助，或是一些学习方法，当然群里的大佬都会积极给新手答疑的。所以，别犹豫，快来加入我们吧！
-
-<br/>
-
 # 联系
 
 If you have some questions after you see this article, you can contact me or you can find some info by clicking these links.
